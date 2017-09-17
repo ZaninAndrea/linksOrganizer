@@ -16,10 +16,13 @@
         }
     },
     "dependencies": {
+        "antd": "^2.12.8",
+        "cheerio": "^1.0.0-rc.2",
+        "electron-is-dev": "^0.3.0",
         "react": "^15.6.1",
         "react-dom": "^15.6.1",
         "react-scripts": "1.0.10",
-	"electron-is-dev":"^0.3.0"
+        "request": "^2.81.0"
     },
     "scripts": {
         "start": "react-scripts start",

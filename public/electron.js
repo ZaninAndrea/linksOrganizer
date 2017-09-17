@@ -1,9 +1,28 @@
 const electron = require('electron');
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
+const { exec } = require('child_process');
+const {ipcMain, shell} = require('electron')
+const generatePreview = require("./generatePreview.js")
 const path = require('path');
 const isDev = require('electron-is-dev');
 
+let previewCache={} // cache of link previews used in the markdown preview
+
+const insertInPreviewCache = url => sender => preview => {
+    previewCache[url] = preview // caches the preview
+    sender.send("linkPreviewReady") // notifies the react app that the preview is ready
+}
+
+// handle link preview creation
+ipcMain.on("linkPreview", (event, ...args) => {
+    if (previewCache.hasOwnProperty(args.toString())){
+        event.returnValue = previewCache[args.toString()] // returns the cached preview
+    } else {
+        generatePreview(...args, insertInPreviewCache(args.toString())(event.sender) ) // asynchronous preview creation
+        event.returnValue = args[0] // while the preview is being create display just the link
+    }
+})
 let mainWindow;
 
 function createWindow() {
