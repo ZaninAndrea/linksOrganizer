@@ -10,7 +10,7 @@ class Results extends Component {
     }
 
     render() {
-        return <div>{this.props.links.map((x, idx) => <div key={idx} dangerouslySetInnerHTML={{__html: ipcRenderer.sendSync('linkPreview', x.link, x.tags, x.type)}}/>)}</div>
+        return <div>{this.props.links.map((x, idx) => <div key={x.link} dangerouslySetInnerHTML={{__html: ipcRenderer.sendSync('linkPreview', x.link, x.tags, x.type)}}/>)}</div>
     }
 }
 

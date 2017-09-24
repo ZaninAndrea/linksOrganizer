@@ -2,10 +2,11 @@ const electron = require('electron');
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const { exec } = require('child_process');
-const {ipcMain, shell} = require('electron')
+const {ipcMain, shell, dialog} = require('electron')
 const generatePreview = require("./generatePreview.js")
 const path = require('path');
 const isDev = require('electron-is-dev');
+const fs = require("fs")
 
 let previewCache={} // cache of link previews used in the markdown preview
 
@@ -24,6 +25,14 @@ ipcMain.on("linkPreview", (event, ...args) => {
     }
 })
 let mainWindow;
+
+ipcMain.on("save", (event, links) => {
+    dialog.showSaveDialog({}, function (filePath) {
+        fs.writeFile(filePath, JSON.stringify(links), function (err) {
+            event.returnValue = err
+        });
+    });
+})
 
 function createWindow() {
   mainWindow = new BrowserWindow({width: 900, height: 680});
